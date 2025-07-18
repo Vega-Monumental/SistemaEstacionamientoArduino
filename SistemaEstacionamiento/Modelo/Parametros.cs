@@ -20,7 +20,7 @@ namespace SistemaEstacionamiento.Modelo
         public int await_LecturaPatente { get; set; }
         public string dir_ANPR { get; set; }
         public int cameraMask { get; set; }
-
+        public int num_caja { get; set; }
         public string nom_impresora { get; set; }
 
 

@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Timers;
 using SistemaEstacionamiento.Modelo;
+using AccesoDatos;
 
 namespace SistemaEstacionamiento
 {
@@ -739,57 +740,67 @@ namespace SistemaEstacionamiento
         /// <summary>
         /// Procesar acceso vehicular (simulación)
         /// </summary>
+
         static async Task ProcesarAccesoVehicular()
         {
-            //var pasos = new[]
-            //{
-            //    ("Activando cámara ANPR", 1000),
-            //    ("Capturando imagen del vehículo", 1500),
-            //    ("Procesando imagen y extrayendo patente", 2000),
-            //    ("Patente detectada: ABC-123", 500),
-            //    ("Registrando ingreso en base de datos", 1000),
-            //    ("Generando ticket de estacionamiento", 1500),
-            //    ("Imprimiendo ticket", 2000),
-            //    ("Abriendo barrera", 1000)
-            //};
-
-            //Console.WriteLine("\nProcesando solicitud:");
-
-            //foreach (var (paso, delay) in pasos)
-            //{
-            //    Console.Write($"  → {paso}");
-            //    await Task.Delay(delay);
-            //    Console.WriteLine(" ✓");
-            //}
-
-            //Boleta boleta = new Boleta
-            //{
-            //    num_boleta = 0,
-            //    patente = "ABC-123",
-            //    fechaentrada = DateTime.Now,
-            //    horaentrada = DateTime.Now.TimeOfDay,
-            //    cod_turno = 1,
-            //    cod_usuario = 1,
-            //    cod_tipo_usuario = 1,
-            //    num_caja = 1,
-            //    nombre_acceso = "Acceso Principal",
-            //    estado = 1, // Estado de acceso autorizado
-            //    tipo_liberado = 0 // Tipo de liberación (0: normal)
-            //};
-
 
             Neural n = new Neural();
-            string Patente = await n.getPatente();
-            
-            Console.WriteLine("hola soy la patente ijijijjij btromomsis --------- aldklakdas" + Patente);
+
+            Boleta b = new Boleta();
+
+            var resultado = await n.getPatente();
+            string patente = resultado.patente;
+            int? id = resultado.incidenceID;
+
+            Console.WriteLine($"Patente  : {patente}, ID   : {id}");
 
 
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("\n  ✓ ACCESO AUTORIZADO - Proceso completado\n");
-            Console.ResetColor();
+            // 1. Instanciar la clase Cajas
+            Cajas caja = new Cajas();
+
+            // 2. Llamar al método ObtenerInfoCaja() para obtener los datos de la caja activa (según IP/estado)
+            Cajas infoCaja = caja.ObtenerInfoCaja();
+
+            int numeroTicketActual = b.ObtenerUltimoTicket() + 1;
+
+            if (b.PrintTicket(numeroTicketActual) == true) { 
+                if (infoCaja != null)
+                {
+                    Boleta boleta = new Boleta()
+
+                    {
+                        num_boleta = 0,
+
+                        patente = patente,
+
+                        cod_turno = 0,
+
+                        cod_usuario = 0,
+
+                        cod_tipo_usuario = 0,
+
+                        nombre_acceso = "A1",
+
+                        num_caja = infoCaja.num_caja,
+
+                        incidenceID = id,
+
+                    };
+
+                        boleta.InsertarTicket(boleta);
+                }
+
+                else
+                {
+                    Console.WriteLine("IMPRESORA NO DISPONIBLE. VERIFICAR CONEXIÓN O CONFIGURACIÓN DE IMPRESORA.");
+                }
+
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine("\n  ✓ ACCESO AUTORIZADO - Proceso completado\n");
+                Console.ResetColor();
+            }
         }
-
         /// <summary>
         /// Manejador de detección de vehículo
         /// </summary>

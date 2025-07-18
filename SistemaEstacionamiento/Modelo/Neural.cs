@@ -60,7 +60,8 @@ namespace SistemaEstacionamiento.Modelo
             return cameraMask;
         }
 
-        public async Task<String> getPatente()
+        //se establece como INT? ya que se puede perder la conexion con el servidor de LPR y no se puede obtener el ID de incidencia.
+        public async Task<(string patente, int? incidenceID)> getPatente()
         {
             parametros = parametros.GetdirANPR();
             string ip_neural = parametros.dir_ANPR;
@@ -121,7 +122,6 @@ namespace SistemaEstacionamiento.Modelo
                     string _ultimoid = p.NumberPlate;
                     incidenceID = p.id;
 
-
                     if (_ultimoid == "NO_PLATE")
                     {
                         patente = "NO_PATENTE";
@@ -156,7 +156,7 @@ namespace SistemaEstacionamiento.Modelo
                 
             }
 
-            return patente;
+            return (patente, incidenceID);
         }
 
     }
