@@ -47,6 +47,10 @@ namespace SistemaEstacionamiento
 
         private int numeroTicketActual;
 
+        public string PatenteActual { get; set; }
+        public Cajas CajaActual { get; set; }
+
+
         public bool InsertarTicket(Boleta ib)
         {
             using (IDbConnection connection = new SqlConnection(Helper.CnnVal("PM")))
@@ -148,7 +152,7 @@ namespace SistemaEstacionamiento
 
             int numeroTicketActual = ObtenerUltimoTicket() + 1;
 
-            Cajas infoCaja = new Cajas();
+           
 
 
             Graphics g = e.Graphics;
@@ -179,8 +183,15 @@ namespace SistemaEstacionamiento
             g.DrawString($"FECHA : {DateTime.Now.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}", cabecera, sb, y, SPACE + 140);
             g.DrawString($"HORA : {DateTime.Now.ToString("HH:mm:ss", CultureInfo.InvariantCulture)}", cabecera, sb, 280, SPACE + 140, new StringFormat(StringFormatFlags.DirectionRightToLeft));
 
-            g.DrawString($"ACCESO: {infoCaja.ObtenerInfoCaja()}", fBody, sb, y, SPACE + 155);
-            g.DrawString($"PATENTE:{patente} ", fBody, sb, y, SPACE + 170);
+            if (this.CajaActual != null && !string.IsNullOrEmpty(this.CajaActual.ubicacion))
+            {
+                g.DrawString($"ACCESO: {this.CajaActual.ubicacion}", fBody, sb, y, SPACE + 155);
+            }
+            else
+            {
+                g.DrawString("ACCESO: NO DETECTADO", fBody, sb, y, SPACE + 155);
+            }
+            g.DrawString($"PATENTE: {this.patente}", fBody, sb, y, SPACE + 170);
             if (codigoBarrasTicket != null)
                 g.DrawImage(codigoBarrasTicket, cb);
 

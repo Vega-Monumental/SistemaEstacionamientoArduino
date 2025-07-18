@@ -763,44 +763,46 @@ namespace SistemaEstacionamiento
             Cajas infoCaja = caja.ObtenerInfoCaja();
 
             int numeroTicketActual = b.ObtenerUltimoTicket() + 1;
+            //b.PatenteActual = patente;
 
-            if (b.PrintTicket(numeroTicketActual) == true) { 
-                if (infoCaja != null)
-                {
-                    Boleta boleta = new Boleta()
+            if (infoCaja != null)
+            {
 
-                    {
-                        num_boleta = 0,
+                b.num_boleta = 0;
 
-                        patente = patente,
+                b.patente = patente;
 
-                        cod_turno = 0,
+                b.cod_turno = 0;
 
-                        cod_usuario = 0,
+                b.cod_usuario = 0;
 
-                        cod_tipo_usuario = 0,
+                b.cod_tipo_usuario = 0;
 
-                        nombre_acceso = "A1",
+                b.nombre_acceso = "A1";
 
-                        num_caja = infoCaja.num_caja,
+                b.num_caja = infoCaja.num_caja;
 
-                        incidenceID = id,
+                b.incidenceID = id;
 
-                    };
+                b.CajaActual = infoCaja;
 
-                        boleta.InsertarTicket(boleta);
-                }
-
-                else
-                {
-                    Console.WriteLine("IMPRESORA NO DISPONIBLE. VERIFICAR CONEXIÓN O CONFIGURACIÓN DE IMPRESORA.");
-                }
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\n  ✓ ACCESO AUTORIZADO - Proceso completado\n");
-                Console.ResetColor();
             }
+
+
+            if (b.PrintTicket(numeroTicketActual) == true)
+            {
+                b.InsertarTicket(b);
+            }
+            else
+            {
+                Console.WriteLine("IMPRESORA NO DISPONIBLE. VERIFICAR CONEXIÓN O CONFIGURACIÓN DE IMPRESORA.");
+            }
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n  ✓ ACCESO AUTORIZADO - Proceso completado\n");
+            Console.ResetColor();
         }
+    
         /// <summary>
         /// Manejador de detección de vehículo
         /// </summary>
