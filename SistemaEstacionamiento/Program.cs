@@ -743,10 +743,15 @@ namespace SistemaEstacionamiento
 
         static async Task ProcesarAccesoVehicular()
         {
+            SerialPort SP1 = new SerialPort();
+
+            Parametros Parametros = null;
 
             Neural n = new Neural();
 
             Boleta b = new Boleta();
+
+            Barrera barrera = new Barrera();
 
             var resultado = await n.getPatente();
             string patente = resultado.patente;
@@ -792,6 +797,7 @@ namespace SistemaEstacionamiento
             if (b.PrintTicket(numeroTicketActual) == true)
             {
                 b.InsertarTicket(b);
+                barrera.AbrirBarrera(true);
             }
             else
             {

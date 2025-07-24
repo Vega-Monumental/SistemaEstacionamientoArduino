@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,19 @@ namespace SistemaEstacionamiento.Modelo
         public int cameraMask { get; set; }
         public int num_caja { get; set; }
         public string nom_impresora { get; set; }
+        public int COM_rele { get; set; }
+        public string string_rele { get; set; }
+        public string string_rele2 { get; set; }
+        public int await_boleta_barrera { get; set; }
 
+
+
+        public Parametros ObtenerParametros()
+        {
+            var connection = new   System.Data.SqlClient.SqlConnection(Helper.CnnVal("PM"));
+            return connection.QueryFirstOrDefault<Parametros>(
+                "SELECT * FROM parametros");
+        }
 
         public Parametros GetLecturaPatente()
         {
